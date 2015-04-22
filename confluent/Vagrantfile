@@ -6,7 +6,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname = "confluent-dev"
 
   config.vm.provider "virtualbox" do |vb|
+    # If the VM's RAM is less than 2GB, change the JVM heap sizes (check provision.sh)
     vb.memory = 2048
+
   end
 
   config.vm.provision "shell", path: "provision.sh"

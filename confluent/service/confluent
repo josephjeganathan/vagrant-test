@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# description: Confluent
+
+start() {
+  echo "Starting confluent..."
+  echo "Clean up data..."
+  rm -rf /confluent/logs &>/dev/null
+  rm -rf /confluent/data &>/dev/null
+  mkdir -p /confluent/logs &>/dev/null
+  mkdir -p /confluent/data &>/dev/null
+
+  echo "Starting zookeeper..."
+  zookeeper-server-start /confluent/config/zookeeper.properties > /confluent/logs/zookeeper.log &
+  echo "Starting kafka broker..."
+  kafka-server-start /confluent/config/server.properties > /confluent/logs/kafka.log &
+
+  i=0
+  while [ $i -lt 60 ] # Maximum wait is 1 min
+  do
+    i=$[$i+1]
+    
+    if [ -f "/confluent/data/kafka/.lock" ]; then
+      echo "Kafka broker has started, starting rest apis"
+      kafka-rest-start > /confluent/logs/kafka-rest.log &
+      schema-registry-start /confluent/config/schema-registry.properties > /confluent/logs/confluent-schema.log &
+      break
+    else
+      echo "Waiting for kafka broker to start..."
+      sleep 1
+    fi
+  done
+}
+
+stop() {
+  echo "Stopping confluent..."
+  for pid in `ps ax | grep -i 'kafka' | grep -v grep | awk '{print $1}'`
+  do
+    kill -9 $pid
+  done
+}
+
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status confluent
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0
