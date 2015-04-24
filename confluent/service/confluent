@@ -34,7 +34,7 @@ start() {
 
 stop() {
   echo "Stopping confluent..."
-  for pid in `ps ax | grep -i 'kafka' | grep -v grep | awk '{print $1}'`
+  for pid in `ps ax | grep -i 'kafka' | grep -v kafka-manager | grep -v grep | awk '{print $1}'`
   do
     kill -9 $pid
   done

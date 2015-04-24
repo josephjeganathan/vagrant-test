@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# description: kafka manager
+
+start() {
+  echo "Starting kafka manager..."
+  cd /kafka-manager
+  ./bin/kafka-manager -Dconfig.file=./conf/application.conf &
+}
+
+stop() {
+  echo "Stopping confluent..."
+  for pid in `ps ax | grep -i 'kafka-manager' | grep -v grep | awk '{print $1}'`
+  do
+    kill -9 $pid
+  done
+}
+
+### main logic ###
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status confluent
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit 0

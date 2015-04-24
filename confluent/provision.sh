@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Step 1: Install Java
 
 command -v java -version &>/dev/null || {
