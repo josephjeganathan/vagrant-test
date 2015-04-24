@@ -19,7 +19,7 @@ if [ ! -f "/kafka-manager/bin/kafka-manager" ]; then
   command -v unzip -v &>/dev/null || {
     echo "Installing upzip..."
     apt-get -y update >/dev/null
-    apt-get -y install unzip
+    apt-get -y install unzip >/dev/null
   }
 
 

@@ -3,9 +3,9 @@
 # Step 1: Install Java
 
 command -v java -version &>/dev/null || {
-  echo "Installing Java..."
-  apt-get -y update 
-  apt-get -y install openjdk-7-jdk
+  echo "Installing Java, this may take few minutes..."
+  apt-get -y update &>/dev/null
+  apt-get -y install openjdk-7-jdk &>/dev/null
 }
 
 # Step 2: Installing confluent
@@ -15,9 +15,9 @@ if [ ! -f "/usr/bin/kafka-server-start" ]; then
   wget -qO - http://packages.confluent.io/deb/1.0/archive.key | apt-key add -
 
   add-apt-repository "deb [arch=all] http://packages.confluent.io/deb/1.0 stable main"
-  apt-get -y update 
+  apt-get -y update &>/dev/null
   
-  apt-get -y install confluent-platform-2.10.4
+  apt-get -y install confluent-platform-2.10.4  &>/dev/null
 fi                                              
 
 # Step 3: Start Confluent
